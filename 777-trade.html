@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#111111">
+<link rel="manifest" href="manifest.webmanifest">
+<title>777 GOLD TRADE</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#0f0f10;font-family:Tahoma,Arial,sans-serif;color:#171717}
+.app{max-width:520px;margin:auto;min-height:100vh;background:#f5f0e6;padding:18px}
+.brand{text-align:center;background:#111;border-radius:22px;padding:18px;color:#c99a35}
+.brand b{font:700 30px Georgia,serif}.brand small{display:block;color:#fff;letter-spacing:4px;margin-top:4px}
+.trade-title{font-weight:bold;text-align:center;margin:7px 0 0;color:#d5ad55;letter-spacing:2px}
+.box{background:#fff;border:1px solid #d2ad5b;border-radius:20px;padding:16px;margin-top:16px}
+label{display:block;font-weight:bold;margin:12px 0 6px}
+input{width:100%;padding:13px;border:1px solid #ccc;border-radius:12px;font-size:18px}
+.toggle,.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+button{padding:13px;border:0;border-radius:12px;font-size:16px;font-weight:bold}
+.trade{background:#eee}.trade.active,.gold{background:#b98b2b;color:#fff}.dark{background:#171717;color:#fff}
+.card{margin-top:17px;background:linear-gradient(135deg,#fffdf8,#f3e8d3);border:2px solid #b98b2b;border-radius:22px;padding:22px;text-align:center;box-shadow:0 10px 25px #0002}
+.logo{font:700 27px Georgia,serif;color:#a97818;direction:ltr}.sub{font-size:10px;letter-spacing:4px;direction:ltr}
+.rule{height:1px;background:#c5a25a;margin:16px}.company{font-size:24px;font-weight:bold}
+.amount{font:800 42px Arial;color:#aa7719;direction:ltr;margin-top:12px}
+.rate{font-size:21px;font-weight:bold}.rate strong{font:700 27px Arial;color:#a87415}
+.thanks{border-top:1px solid #c5a25a;margin-top:18px;padding-top:15px;font-weight:bold}
+.date{font-size:11px;color:#777;margin-top:10px;direction:ltr}
+.note{text-align:center;color:#666;font-size:12px;margin-top:10px}
+</style>
+</head>
+<body><div class="app">
+<div class="brand"><b>777GOLD</b><small>INTERNATIONAL</small><div class="trade-title">TRADE • BUY & SELL</div></div>
+<div class="box">
+<label>نوع معامله</label><div class="toggle">
+<button id="sellBtn" class="trade active" onclick="setTrade('sell')">فروش</button>
+<button id="buyBtn" class="trade" onclick="setTrade('buy')">خرید</button></div>
+<input id="trade" type="hidden" value="sell">
+<label>نام شرکت</label><input id="company" placeholder="مثلاً HAYAT">
+<label>مبلغ دلار</label><input id="amount" inputmode="numeric" placeholder="مثلاً 50000">
+<label>نرخ (تومان)</label><input id="rate" inputmode="numeric" placeholder="مثلاً 235900">
+<div class="actions" style="margin-top:15px">
+<button class="gold" onclick="updateCard()">به‌روزرسانی کارت</button>
+<button class="dark" onclick="shareCard()">اشتراک / واتساپ</button>
+<button class="dark" onclick="downloadCard()">ذخیره عکس</button>
+<button class="gold" onclick="clearForm()">ورودی جدید</button>
+</div></div>
+<div id="capture" class="card">
+<div class="logo">777GOLD</div><div class="sub">INTERNATIONAL</div><div class="rule"></div>
+<div class="company">شرکت <span id="cCompany">—</span></div>
+<div class="amount"><span id="cAmount">—</span> <span style="font-size:19px;color:#222">دلار</span></div>
+<div class="rule"></div>
+<div class="rate">در نرخ <strong id="cRate">—</strong> تومان <span id="tradeText">فروخته شد.</span></div>
+<div class="thanks">از حسن اعتماد شما سپاسگزاریم.</div><div id="cDate" class="date"></div>
+</div><div class="note">777 GOLD TRADE</div></div>
+<script>
+const $=x=>document.getElementById(x), fmt=v=>{let n=(v||'').replace(/[^0-9]/g,'');return n?Number(n).toLocaleString('en-US'):'—'};
+function setTrade(t){$('trade').value=t;$('sellBtn').classList.toggle('active',t==='sell');$('buyBtn').classList.toggle('active',t==='buy');updateCard()}
+function updateCard(){$('cCompany').textContent=$('company').value.trim()||'—';$('cAmount').textContent=fmt($('amount').value);$('cRate').textContent=fmt($('rate').value);$('tradeText').textContent=$('trade').value==='buy'?'خریداری شد.':'فروخته شد.';$('cDate').textContent=new Date().toLocaleDateString('en-GB');localStorage.setItem('777trade',JSON.stringify({company:$('company').value,amount:$('amount').value,rate:$('rate').value,trade:$('trade').value}))}
+['company','amount','rate'].forEach(x=>$(x).addEventListener('input',updateCard));
+function clearForm(){$('company').value='';$('amount').value='';$('rate').value='';updateCard();$('company').focus()}
+async function cardBlob(){updateCard();const e=$('capture'),r=e.getBoundingClientRect(),s=2,c=document.createElement('canvas');c.width=r.width*s;c.height=r.height*s;const x=c.getContext('2d');x.scale(s,s);const css=[...document.querySelectorAll('style')].map(z=>z.textContent).join('');const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${r.width}" height="${r.height}"><foreignObject width="100%" height="100%"><div xmlns="http://www.w3.org/1999/xhtml"><style>${css}</style>${e.cloneNode(true).outerHTML}</div></foreignObject></svg>`;const i=new Image();await new Promise((a,b)=>{i.onload=a;i.onerror=b;i.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg)});x.drawImage(i,0,0,r.width,r.height);return await new Promise(a=>c.toBlob(a,'image/png',1))}
+async function downloadCard(){try{const b=await cardBlob(),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='777-GOLD-TRADE.png';a.click()}catch(e){alert('در صورت نیاز از کارت اسکرین‌شات بگیرید.')}}
+async function shareCard(){try{const b=await cardBlob(),f=new File([b],'777-GOLD-TRADE.png',{type:'image/png'});if(navigator.canShare&&navigator.canShare({files:[f]}))await navigator.share({files:[f],title:'777 GOLD TRADE'});else await downloadCard()}catch(e){}}
+try{let d=JSON.parse(localStorage.getItem('777trade'));if(d){$('company').value=d.company||'';$('amount').value=d.amount||'';$('rate').value=d.rate||'';$('trade').value=d.trade||'sell'}}catch(e){}
+setTrade($('trade').value);
+if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js');
+</script></body></html>
